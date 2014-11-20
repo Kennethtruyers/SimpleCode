@@ -73,7 +73,6 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.1.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="Api\UserController.cs" />
     <Compile Include="Application\Commands\CommandHandlers.cs" />
