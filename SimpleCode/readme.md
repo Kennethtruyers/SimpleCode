@@ -1,0 +1,3 @@
+﻿This repository hosts the code that implements the patterns described in my blog posts about simplicity. The posts can be found at http://www.kenneth-truyers.net/tag/simplicity/
+
+> *Disclaimer: this code is a sample of patterns and practices. It is in no way tested or complete. If you have any remarks, questions or ideas to improve it, please comment, fork, throw me a pull request engage with me on twitter (@kennethtruyers) *
