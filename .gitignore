@@ -1,0 +1,9 @@
+SimpleCode.v12.suo
+SimpleCode.sln.DotSettings.user
+packages/
+*.user
+SimpleCode.Tests/bin/
+SimpleCode.Tests/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+SimpleCode.Tests/obj/
+SimpleCode/bin/
+SimpleCode/obj/
