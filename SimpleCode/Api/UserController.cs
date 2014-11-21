@@ -17,7 +17,7 @@ namespace SimpleCode.Api
 		}
 
 		[HttpGet]
-		[Route("users/{int:userid}/friends")]
+		[Route("users/{userid:int}/friends")]
 		public List<Friend> GetFriendsForUser(int userId)
 		{
 			return Query.Get<List<Friend>>(new ByUserId(userId));
@@ -31,14 +31,14 @@ namespace SimpleCode.Api
 		}
 
 		[HttpPut]
-		[Route("users/{int:id}/profiles")]
+		[Route("users/{id:int}/profiles")]
 		public void UpdateProfile(int id, string name, string lastName)
 		{
 			Commands.Dispatch(new UpdateProfile(id, name, lastName));
 		}
 
 		[HttpPost]
-		[Route("users/{int:id}/friends")]
+		[Route("users/{id:int}/friends")]
 		public void AddFriend(int id, int friendId, DateTime friendSince)
 		{
 			Commands.Dispatch(new AddFriend(id, friendId, friendSince));

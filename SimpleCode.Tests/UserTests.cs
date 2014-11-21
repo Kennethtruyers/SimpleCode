@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Machine.Fakes;
 using Machine.Specifications;
+using SimpleCode.Application.Commands;
 using SimpleCode.Application.Events;
 using SimpleCode.Domain;
 using SimpleCode.Domain.Memento;
@@ -12,58 +13,55 @@ using SimpleCode.Domain.Memento;
 namespace SimpleCode.Tests
 {
 	[Subject(typeof(User))]
-	class When_updating_a_profile : WithSubject<User>
+	class When_updating_a_profile : WithFakes
 	{
 		It updates_the_profile = () =>
 			ConfigForAnEventBus<ProfileUpdated>.LastEvent.ShouldBeLike(expected);
 
 		Because of = () =>
-			Subject.UpdateProfile("first", "last");
+			CommandHandlers.UpdateProfile(new UpdateProfile(1, expected.FirstName, expected.LastName), user);
 
 		Establish context = () =>
-		{
-			Subject = User.FromMemento(new UserMemento { Id = 1 });
 			With<ConfigForAnEventBus<ProfileUpdated>>();
-		};
 
+		static User user = User.FromMemento(new UserMemento { Id = 1 });
 		static ProfileUpdated expected = new ProfileUpdated(1, "first", "last");
 	}
 
 	[Subject(typeof(User))]
-	class When_creating_a_user : WithSubject<User>
+	class When_creating_a_user : WithFakes
 	{
 		It creates_the_user = () =>
 			ConfigForAnEventBus<UserCreated>.LastEvent.ShouldBeLike(expected);
 
 		Because of = () =>
-			new User("first", "last");
+			CommandHandlers.CreateUser(new CreateUser(expected.FirstName, expected.LastName));
 
-		Establish context = () => 
+		Establish context = () =>
 			With<ConfigForAnEventBus<UserCreated>>();
 
 		static UserCreated expected = new UserCreated("first", "last");
 	}
 
 	[Subject(typeof(User))]
-	class When_adding_a_friend_to_a_user_which_has_less_than_10_friends : WithSubject<User>
+	class When_adding_a_friend_to_a_user_which_has_less_than_10_friends : WithFakes
 	{
 		It adds_the_friend = () =>
 			ConfigForAnEventBus<FriendAdded>.LastEvent.ShouldBeLike(expected);
 
 		Because of = () =>
-			Subject.AddFriend(expected.FriendId, expected.FriendsSince);
+			CommandHandlers.AddFriend(command, user);
 
 		Establish context = () =>
-		{
-			Subject = User.FromMemento(new UserMemento { Id = 1, Friends = new List<int> {1,2,3,4} });
 			With<ConfigForAnEventBus<FriendAdded>>();
-		};
 
-		static FriendAdded expected = new FriendAdded(1, 5, DateTime.Now);
+		static User user = User.FromMemento(new UserMemento { Id = 1, Friends = new List<int> { 1, 2, 3, 4 } });
+		static AddFriend command = new AddFriend(1, 5, DateTime.Now);
+		static FriendAdded expected = new FriendAdded(command.ID, command.FriendId, command.FriendSince);
 	}
 
 	[Subject(typeof(User))]
-	class When_adding_a_friend_to_a_user_which_has_10_friends : WithSubject<User>
+	class When_adding_a_friend_to_a_user_which_has_10_friends : WithFakes
 	{
 		It does_not_add_the_friend = () =>
 			ConfigForAnEventBus<FriendAdded>.LastEvent.ShouldBeNull();
@@ -72,14 +70,14 @@ namespace SimpleCode.Tests
 			exception.ShouldBeOfExactType<InvalidOperationException>();
 
 		Because of = () =>
-			exception = Catch.Exception(() => Subject.AddFriend(1, DateTime.Now));
+			exception = Catch.Exception(() => CommandHandlers.AddFriend(command, user));
 
 		Establish context = () =>
-		{
-			Subject = User.FromMemento(new UserMemento { Id = 1, Friends = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } });
 			With<ConfigForAnEventBus<FriendAdded>>();
-		};
 
+		static User user = User.FromMemento(new UserMemento { Id = 1, Friends = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 } });
+		static AddFriend command = new AddFriend(1, 5, DateTime.Now);
+		static FriendAdded expected = new FriendAdded(command.ID, command.FriendId, command.FriendSince);
 		static Exception exception;
 	}
 
